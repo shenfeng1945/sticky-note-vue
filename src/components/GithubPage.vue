@@ -1,7 +1,7 @@
 <template>
    <div>
       <div class="github" v-if="!isAuthorizate">
-        <a href="http://127.0.0.1:6060/auth/github">
+        <a href="https://shenfeng1945.xyz:6060/auth/github">
              <svg class="icon icon-28" style="fill:white;">
                 <use xlink:href="#icon-github"></use>
              </svg>

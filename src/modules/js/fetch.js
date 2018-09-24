@@ -1,4 +1,4 @@
-// import Toast from './toast'
+import Toast from './toast'
 import axios from 'axios'
 function fetch(url,data){
     if(data){
@@ -6,8 +6,8 @@ function fetch(url,data){
             axios.post(url,data)
              .then(res=>{
                resolve(res)
-             }).catch(()=>{
-                // Toast('网络异常')
+             }).catch(({response})=>{
+                Toast(response.data.error,1000,'error')
              })
         })
     }else{
@@ -15,8 +15,8 @@ function fetch(url,data){
             axios.get(url)
              .then(res=>{
                resolve(res)
-             }).catch(()=>{
-                // Toast('网络异常')
+             }).catch(({response})=>{
+                Toast(response.data.error,1000,'error')
              })
         })
     }

@@ -1,5 +1,5 @@
 class sortRank {
-    static swapn(array, left, right) {
+    static swap(array, left, right) {
         let rightValue = array[right]
         array[right] = array[left]
         array[left] = rightValue

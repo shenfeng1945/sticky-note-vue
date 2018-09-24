@@ -1,6 +1,6 @@
 var WaterFall = (function () {
     let $ct
-    let $items
+    let $item
 
     function render($c) {
         //container
@@ -30,9 +30,9 @@ var WaterFall = (function () {
             colSumHeight[idx] = $cur.outerHeight(true) + colSumHeight[idx]
         })
     }
-    // $(window).on('resize', () => {
-    //     render($('#content'))
-    // })
+    $(window).on('resize', () => {
+        render($('#content'))
+    })
     return {
         init: render
     }

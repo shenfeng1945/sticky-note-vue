@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import MainComponent from '@/components/MainComponent'
+import SetAuth from '@/components/SetAuth'
 
 Vue.use(Router)
 
@@ -12,8 +13,13 @@ export default new Router({
       component: MainComponent
     },
     {
-        path: '*',
-        redirect: '/'
+        path: '/setAuth',
+        name: 'SetAuth',
+        component: SetAuth,
+    },
+    {
+      path: '*',
+      redirect: '/'
     }
   ]
 })

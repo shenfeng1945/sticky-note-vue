@@ -2,7 +2,7 @@
     <div id="app">
         <header>
             <div class="header">
-                <div class="title">Daskys
+                <div class="title">Sticky
                     <span>在线便签</span>
                 </div>
                 <ul>
@@ -255,6 +255,7 @@ let options =  {
     },
     deleteNoteById(id){
       this.currentNoteLists = this.currentNoteLists.filter(item=>item.id!==id)
+      this.setSortRank();
     }
   },
   directives: {

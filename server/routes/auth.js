@@ -20,7 +20,7 @@ passport.deserializeUser(function (obj, done) {
 passport.use(new GitHubStrategy({
     clientID: 'b90db91c737315789772',
     clientSecret: '428c4114c21058405e1381f55099e3e22b9909df',
-    callbackURL: "https://shenfeng1945.xyz:6060/auth/github/callback"
+    callbackURL: "https://shenfeng1945.cn:6060/auth/github/callback"
 },
     function (accessToken, refreshToken, profile, done) {
         done(null, profile);

@@ -31,7 +31,7 @@
                     <use xlink:href="#icon-up"></use>
                 </svg>
             </div> -->
-            <div class="add" @click="isAddNote = true">
+            <div class="add" @click="openModel">
                 <svg class="icon icon-36">
                     <use xlink:href="#icon-add"></use>
                 </svg>
@@ -65,15 +65,15 @@
 </template>
 
 <script>
-import WaterFall from '../modules/js/waterfall.js'
+import WaterFall from "../modules/js/waterfall.js";
 import sortRank from "../modules/js/sort.js";
-import Toast from '../modules/js/toast.js'
+import Toast from "../modules/js/toast.js";
 import noteService from "../modules/js/noteService.js";
 import "../modules/css/index.less";
 import "../assets/js/icon.js";
-import GithubPage from './GithubPage'
-import ContentItem from './ContentItem'
-let options =  {
+import GithubPage from "./GithubPage";
+import ContentItem from "./ContentItem";
+let options = {
   name: "app",
   data() {
     return {
@@ -88,14 +88,14 @@ let options =  {
       element: null,
       nowRank: "all",
       sortRank: { direc: "+", kind: "time" },
-      isShowDropDown: false,
+      isShowDropDown: false
     };
   },
   created() {
     this.getLocal();
-    document.addEventListener('click',()=>{
+    document.addEventListener("click", () => {
       this.isShowDropDown = false;
-    })
+    });
   },
   methods: {
     setLocal() {
@@ -107,52 +107,54 @@ let options =  {
       } else {
         this.sortRank = JSON.parse(localStorage.getItem("sort"));
       }
-    //  this.setSortRank()
+      //  this.setSortRank()
     },
     getAllNoteLists() {
       this.nowRank = "all";
       noteService.list().then(res => {
-        this.currentNoteLists = Object.assign([],res.data.data);
+        this.currentNoteLists = Object.assign([], res.data.data);
         this.setNoteAttri();
-        setTimeout(()=>{
-          this.doWaterFall()
-        },0)
-      })   
+        setTimeout(() => {
+          this.doWaterFall();
+        }, 0);
+      });
     },
     getNoteLists() {
-      if(this.nowRank === 'all'){
-         this.getAllNoteLists()
-      }else if(this.nowRank === 'haveDone'){
+      if (this.nowRank === "all") {
+        this.getAllNoteLists();
+      } else if (this.nowRank === "haveDone") {
         this.getNoteDoneLists();
-      }else if(this.nowRank === 'sort'){
+      } else if (this.nowRank === "sort") {
         this.getNoteSort();
       }
     },
     getNoteDoneLists() {
       this.nowRank = "haveDone";
       noteService.list().then(res => {
-        this.currentNoteLists = Object.assign([],res.data.data).filter(item=>item.finish)
+        this.currentNoteLists = Object.assign([], res.data.data).filter(
+          item => item.finish
+        );
         this.setNoteAttri();
-        setTimeout(()=>{
-          this.doWaterFall()
-        },0)
-      })
+        setTimeout(() => {
+          this.doWaterFall();
+        }, 0);
+      });
     },
     setNoteAttri() {
-      this.currentNoteLists.map(item=>{
+      this.currentNoteLists.map(item => {
         item.isEditing = false;
         item.left = 0;
         item.top = 0;
         item.isTop = false;
-        item.createdAt = new Date(item.createdAt).toLocaleDateString()
-      })
+        item.createdAt = new Date(item.createdAt).toLocaleDateString();
+      });
       this.setStar();
       // setTimeout(() => {
       //   this.doWaterFall();
       // }, 0);
     },
-    doWaterFall(){
-      WaterFall.init(this.element)
+    doWaterFall() {
+      WaterFall.init(this.element);
     },
     setStar() {
       this.currentNoteLists.forEach(item => {
@@ -190,7 +192,7 @@ let options =  {
           if (res.status === 200) {
             this.getNoteLists();
             this.closeModel();
-            Toast('添加成功')
+            Toast("添加成功");
           } else if (res.status === 400) {
             Toast(res.errorMsg, 1000, "error");
             return;
@@ -201,6 +203,13 @@ let options =  {
       this.isAddNote = false;
       this.addNotes.text = "";
       this.addNotes.star = 0;
+    },
+    openModel() {
+      if (localStorage.getItem("token")) {
+        this.isAddNote = true;
+      } else {
+        Toast("请先登录");
+      }
     },
     initNoteStyle(el) {
       Array.from(el.children).forEach((item, i) => {
@@ -219,9 +228,9 @@ let options =  {
         this.sortRank.direc = this.sortRank.direc === "+" ? "-" : "+";
       }
       noteService.list().then(res => {
-         this.currentNoteLists = Object.assign([],res.data.data);
-         this.setSortRank();
-      })
+        this.currentNoteLists = Object.assign([], res.data.data);
+        this.setSortRank();
+      });
     },
     setSortRankKind(string) {
       this.isShowDropDown = false;
@@ -233,10 +242,13 @@ let options =  {
       }
     },
     setSortRank() {
-      this.currentNoteLists = Object.assign([],sortRank.replaceArray(this.currentNoteLists, this.sortRank));
-      setTimeout(()=>{
-        this.doWaterFall()
-      },0)
+      this.currentNoteLists = Object.assign(
+        [],
+        sortRank.replaceArray(this.currentNoteLists, this.sortRank)
+      );
+      setTimeout(() => {
+        this.doWaterFall();
+      }, 0);
     },
     closeDropDown(e) {
       if (e.target.className === "odd") {
@@ -246,15 +258,17 @@ let options =  {
         this.isShowDropDown = false;
       }
     },
-    changeStar(id,starIndex){
-      this.currentNoteLists.map(item=>{
-        if(item.id === id){
-          item.className = `star${starIndex+1}`
+    changeStar(id, starIndex) {
+      this.currentNoteLists.map(item => {
+        if (item.id === id) {
+          item.className = `star${starIndex + 1}`;
         }
-      })
+      });
     },
-    deleteNoteById(id){
-      this.currentNoteLists = this.currentNoteLists.filter(item=>item.id!==id)
+    deleteNoteById(id) {
+      this.currentNoteLists = this.currentNoteLists.filter(
+        item => item.id !== id
+      );
       this.setSortRank();
     }
   },
@@ -265,23 +279,23 @@ let options =  {
       }
     },
     waterfall: {
-      inserted(el,a,b){
+      inserted(el, a, b) {
         WaterFall.init(el);
-    //     options.initNoteStyle(el);
+        //     options.initNoteStyle(el);
         b.context.element = el;
-    //     window.onresize = () => {
-    //       WaterFall.init(vue.element);
-    //       options.initNoteStyle(options.element);
-    //     };
+        //     window.onresize = () => {
+        //       WaterFall.init(vue.element);
+        //       options.initNoteStyle(options.element);
+        //     };
       }
     }
   },
-  components:{
+  components: {
     GithubPage,
-    ContentItem,
+    ContentItem
   }
 };
-export default options
+export default options;
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

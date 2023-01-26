@@ -4,7 +4,7 @@
              @mousedown="mousedown($event)" 
              @mousemove="mousemove($event)" 
              @mouseup="mouseup()">
-            <div class="time">{{noteItem.createdAt.split(' ')[0].replace(/\//,'年').replace(/\//,'月').replace(/$/,'日')}}</div>
+            <div class="time">{{getTime(noteItem.createdAt)}}</div>
         </div>
         <div class="close" @click="deleteNote(noteItem.id)">
             <svg class="icon icon-20">
@@ -33,105 +33,118 @@
 </template>
 
 <script>
-    import noteService from "../modules/js/noteService.js";
-    import Vue from 'vue';
-    import Toast from '../modules/js/toast.js'
-    export default {
-        data() {
-            return {
-                noteItem: {},
-                starLength: 5,
-                isNoteMove: false,
-                curClient: [0, 0],
-                moveClient: [0, 0],
-                element: null,
-            }
-        },
-        created() {
-            this.noteItem = Object.assign({},this.item)
-        },
-        methods: {
-            mousedown(e) {
-                this.noteItem.left = $(this.element).css('left').replace('px','');
-                this.noteItem.top = $(this.element).css('top').replace('px','')
-                this.isNoteMove = true;
-                this.noteItem.isTop = true;
-                this.curClient = [e.clientX - this.noteItem.left, e.clientY - this.noteItem.top];
-            },
-            mousemove(e) {
-                if (this.isNoteMove) {
-                    this.noteItem.left = (e.clientX - this.curClient[0]);
-                    this.noteItem.top = e.clientY - this.curClient[1];
-                }
-            },
-            mouseup() {
-                this.noteItem.isTop = false;
-                this.isNoteMove = false;
-            },
-            deleteNote(id) {
-                noteService.deleteNote(id).then(res => {
-                    if (res.status === 200) {
-                        Toast("删除成功!");
-                        this.$parent.deleteNoteById(id)
-                    } else if (res.status === 400) {
-                        // Toast(res.errorMsg);
-                    }
-                });
-            },
-            editNote() {
-                this.noteItem.isEditing = true;
-            },
-            switchNote() {
-                this.noteItem.isEditing = false;
-            },
-            updateNote() {
-                noteService.editNote(this.noteItem.id, this.noteItem.text).then(res => {
-                    if (res.status === 200) {
-                        Toast(res.data.msg);
-                    } else if (res.status === 400) {
-                        Toast(res.data.errorMsg);
-                    }
-                });
-            },
-            finish() {
-                noteService.editFinish(this.noteItem.id, !this.noteItem.finish).then(res => {
-                    if (res.status === 200) {
-                        this.noteItem.finish = !this.noteItem.finish;
-                        Toast('更新成功')
-                    } else if (res.status === 400) {
-                        Toast(res.errorMsg);
-                    }
-                });
-                // if (this.nowRank === "haveDone") {
-                //     this.getNoteDoneLists();
-                // }
-            },
-            changeStar(id,starIndex) {
-                noteService
-                 .editStar(id, "" + (starIndex + 1))
-                 .then(res => {
-                   if (res.status === 200) {
-                      this.noteItem.className = `star${starIndex+1}`
-                      Toast('更新成功')
-                    } else if (res.status === 400) {
-                   // Toast(res.errorMsg);
-                  }
-                });
-            },
-        },
-        props: ['item'],
-        directives: {
-          focus: {
-            inserted(el) {
-               el.focus();
-            }
-          },
-          position:{
-              inserted(el,a,b){
-                 b.context.element = el;
-              }
-          }
-        }
+import noteService from "../modules/js/noteService.js";
+import Vue from "vue";
+import Toast from "../modules/js/toast.js";
+export default {
+  data() {
+    return {
+      noteItem: {},
+      starLength: 5,
+      isNoteMove: false,
+      curClient: [0, 0],
+      moveClient: [0, 0],
+      element: null
     };
+  },
+  created() {
+    this.noteItem = Object.assign({}, this.item);
+  },
+  methods: {
+    mousedown(e) {
+      this.noteItem.left = $(this.element)
+        .css("left")
+        .replace("px", "");
+      this.noteItem.top = $(this.element)
+        .css("top")
+        .replace("px", "");
+      this.isNoteMove = true;
+      this.noteItem.isTop = true;
+      this.curClient = [
+        e.clientX - this.noteItem.left,
+        e.clientY - this.noteItem.top
+      ];
+    },
+    mousemove(e) {
+      if (this.isNoteMove) {
+        this.noteItem.left = e.clientX - this.curClient[0];
+        this.noteItem.top = e.clientY - this.curClient[1];
+      }
+    },
+    mouseup() {
+      this.noteItem.isTop = false;
+      this.isNoteMove = false;
+    },
+    deleteNote(id) {
+      noteService.deleteNote(id).then(res => {
+        if (res.status === 200) {
+          Toast("删除成功!");
+          this.$parent.deleteNoteById(id);
+        } else if (res.status === 400) {
+          // Toast(res.errorMsg);
+        }
+      });
+    },
+    editNote() {
+      this.noteItem.isEditing = true;
+    },
+    switchNote() {
+      this.noteItem.isEditing = false;
+    },
+    updateNote() {
+      noteService.editNote(this.noteItem.id, this.noteItem.text).then(res => {
+        if (res.status === 200) {
+          Toast(res.data.msg);
+        } else if (res.status === 400) {
+          Toast(res.data.errorMsg);
+        }
+      });
+    },
+    finish() {
+      noteService
+        .editFinish(this.noteItem.id, !this.noteItem.finish)
+        .then(res => {
+          if (res.status === 200) {
+            this.noteItem.finish = !this.noteItem.finish;
+            Toast("更新成功");
+          } else if (res.status === 400) {
+            Toast(res.errorMsg);
+          }
+        });
+      // if (this.nowRank === "haveDone") {
+      //     this.getNoteDoneLists();
+      // }
+    },
+    changeStar(id, starIndex) {
+      noteService.editStar(id, "" + (starIndex + 1)).then(res => {
+        if (res.status === 200) {
+          this.noteItem.className = `star${starIndex + 1}`;
+          Toast("更新成功");
+        } else if (res.status === 400) {
+          // Toast(res.errorMsg);
+        }
+      });
+    },
+    getTime(createdAt) {
+      const time = new Date(createdAt);
+      const year = time.getFullYear(time);
+      const month = time.getMonth(time) + 1;
+      const day = time.getDate(time);
+      return `${year}年${month}月${day}日`;
+    }
+  },
+  props: ["item"],
+  directives: {
+    focus: {
+      inserted(el) {
+        el.focus();
+      }
+    },
+    position: {
+      inserted(el, a, b) {
+        b.context.element = el;
+      }
+    }
+  }
+};
 </script>
-

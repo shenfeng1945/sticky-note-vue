@@ -22,7 +22,7 @@ passport.use(
     {
       clientID: "b90db91c737315789772",
       clientSecret: "fb33f87e87a5af519f7700c18cc24128497d072b",
-      callbackURL: "http://117.50.172.151:6060/oauth/redirect"
+      callbackURL: "http://sticky-note-vue.onrender.com/oauth/redirect"
     },
     function(accessToken, refreshToken, profile, done) {
       done(null, profile);

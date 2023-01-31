@@ -1,7 +1,7 @@
 <template>
    <div>
       <div class="github" v-if="!isAuthorizate">
-        <a href="http://117.50.172.151:6060/oauth/github">
+        <a href="https://sticky-note-vue.onrender.com/oauth/github">
         <!-- <a href="https://github.com/login/oauth/authorize?client_id=b90db91c737315789772&redirect_uri=http://117.50.172.151:6060/oauth/redirect"> -->
              <svg class="icon icon-28" style="fill:white;">
                 <use xlink:href="#icon-github"></use>

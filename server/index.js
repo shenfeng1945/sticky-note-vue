@@ -27,19 +27,13 @@ app.use("/api", api); //ajax请求
 app.use("/users", users);
 app.use("/oauth", auth);
 
-// const key = fs.readFileSync(
-//   "/usr/local/nginx/conf/2_shenfeng1945.cn.key",
-//   "utf8"
-// );
-// var cert = fs.readFileSync(
-//   "/usr/local/nginx/conf/1_shenfeng1945.cn_bundle.crt",
-//   "utf8"
-// );
+const key = fs.readFileSync("/etc/ssl/shenfeng2023.key", "utf8");
+var cert = fs.readFileSync("/etc/ssl/shenfeng2023.pem", "utf8");
 var options = {
-  // key: key,
-  // cert: cert
+  key: key,
+  cert: cert
 };
-app.listen(6060, "0.0.0.0", () => console.log("localhost:6060"));
-// https
-// .createServer(options, app)
-// .listen(6060, () => console.log("localhost:6060"));
+// app.listen(6060, "0.0.0.0", () => console.log("localhost:6060"));
+https
+  .createServer(options, app)
+  .listen(6060, () => console.log("localhost:6060"));
